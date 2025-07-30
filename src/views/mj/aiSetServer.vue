@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { NInput, NButton, useMessage,NSwitch} from "naive-ui"
- 
-import {gptServerStore} from '@/store'
-import { mlog, myTrim,blurClean} from "@/api";
+import { NButton, NInput, NSwitch, useMessage } from 'naive-ui'
+
+import { gptServerStore } from '@/store'
+import { blurClean } from '@/api'
 import { t } from '@/locales'
 
-const emit= defineEmits(['close']);
-const ms= useMessage();
-const save = ()=>{
-    gptServerStore.setMyData( gptServerStore.myData );
-    ms.success( t('mjchat.success'));
-    emit('close');
+const emit = defineEmits(['close'])
+const ms = useMessage()
+const save = () => {
+  gptServerStore.setMyData(gptServerStore.myData)
+  ms.success(t('mjchat.success'))
+  emit('close')
 }
 // const blurClean= ()=>{
 //   mlog('blurClean');
@@ -21,64 +21,79 @@ const save = ()=>{
 //   gptServerStore.myData.UPLOADER_URL=  myTrim( myTrim( gptServerStore.myData.UPLOADER_URL.trim(),'/'),'\\');
 // }
 </script>
+
 <template>
-<div id="setserver"> 
-<div class="text-right">{{ $t('mj.setOpen') }}</div>
-<section class="mb-4 flex justify-between items-center"  >
-    <n-input @blur="blurClean"  :placeholder="$t('mj.setOpenPlaceholder') " v-model:value="gptServerStore.myData.OPENAI_API_BASE_URL" clearable>
-      <template #prefix>
-        <span class="text-[var(--n-tab-text-color-active)]">{{ $t('mj.setOpenUrl') }}:</span>
-      </template>
-    </n-input>
- </section>
+  <div id="setserver">
+    <div class="text-right">
+      {{ $t('mj.setOpen') }}
+    </div>
+    <section class="mb-4 flex justify-between items-center">
+      <NInput v-model:value="gptServerStore.myData.OPENAI_API_BASE_URL" :placeholder="$t('mj.setOpenPlaceholder') " clearable @blur="blurClean">
+        <template #prefix>
+          <span class="text-[var(--n-tab-text-color-active)]">{{ $t('mj.setOpenUrl') }}:</span>
+        </template>
+      </NInput>
+    </section>
 
-<section class="mb-4 flex justify-between items-center"  >
-    <n-input  @blur="blurClean" type="password"  :placeholder="$t('mj.setOpenKeyPlaceholder')" show-password-on="click" v-model:value="gptServerStore.myData.OPENAI_API_KEY" clearable>
-      <template #prefix>
-        <span class="text-[var(--n-tab-text-color-active)]">OpenAI Api Key:</span>
-      </template>
-    </n-input>
- </section>
+    <section class="mb-4 flex justify-between items-center">
+      <NInput v-model:value="gptServerStore.myData.OPENAI_API_KEY" type="password" :placeholder="$t('mj.setOpenKeyPlaceholder')" show-password-on="click" clearable @blur="blurClean">
+        <template #prefix>
+          <span class="text-[var(--n-tab-text-color-active)]">OpenAI Api Key:</span>
+        </template>
+      </NInput>
+    </section>
 
+    <div class="text-right">
+      {{ $t('mj.setMj') }}
+    </div>
+    <section class="mb-4 flex justify-between items-center">
+      <NInput v-model:value="gptServerStore.myData.MJ_SERVER" :placeholder="$t('mj.setOpenPlaceholder') " clearable>
+        <template #prefix>
+          <span class="text-[var(--n-tab-text-color-active)]">{{ $t('mj.setMjUrl') }}</span>
+        </template>
+      </NInput>
+    </section>
 
-<div  class="text-right" >{{$t('mj.setMj')}}</div>
-<section class="mb-4 flex justify-between items-center"  >
-    <n-input    :placeholder="$t('mj.setOpenPlaceholder') "  v-model:value="gptServerStore.myData.MJ_SERVER" clearable>
-      <template #prefix>
-        <span class="text-[var(--n-tab-text-color-active)]">{{$t('mj.setMjUrl')}}</span>
-      </template>
-    </n-input>
- </section>
+    <section class="mb-4 flex justify-between items-center">
+      <NInput v-model:value="gptServerStore.myData.MJ_API_SECRET" type="password" :placeholder="$t('mj.setMjKeyPlaceholder') " show-password-on="click" clearable>
+        <template #prefix>
+          <span class="text-[var(--n-tab-text-color-active)]">Midjourney Api Secret:</span>
+        </template>
+      </NInput>
+    </section>
+    <section class="mb-4 flex justify-start items-center">
+      <NSwitch v-model:value="gptServerStore.myData.MJ_CDN_WSRV">
+        <template #checked>
+          {{ $t('mj.wsrvClose') }}
+        </template>
+        <template #unchecked>
+          {{ $t('mj.wsrvOpen') }}
+        </template>
+      </NSwitch>
+    </section>
 
-<section class="mb-4 flex justify-between items-center"  >
-    <n-input type="password"  :placeholder="$t('mj.setMjKeyPlaceholder') " show-password-on="click" v-model:value="gptServerStore.myData.MJ_API_SECRET" clearable>
-      <template #prefix>
-        <span class="text-[var(--n-tab-text-color-active)]">Midjourney Api Secret:</span>
-      </template>
-    </n-input>
- </section>
- <section class="mb-4 flex justify-start items-center">
-   <n-switch v-model:value="gptServerStore.myData.MJ_CDN_WSRV" >
-      <template #checked>  {{ $t('mj.wsrvClose') }} </template>
-      <template #unchecked> {{ $t('mj.wsrvOpen') }} </template>
-    </n-switch>
- </section>
+    <div class="text-right">
+      {{ $t('mj.setUploader') }}
+    </div>
+    <section class="mb-4 flex justify-between items-center">
+      <NInput v-model:value="gptServerStore.myData.UPLOADER_URL" :placeholder="$t('mj.setOpenPlaceholder')" clearable>
+        <template #prefix>
+          <span class="text-[var(--n-tab-text-color-active)]">{{ $t('mj.setUploaderUrl') }}</span>
+        </template>
+      </NInput>
+    </section>
 
- <div  class="text-right" > {{$t('mj.setUploader')}}</div>
-<section class="mb-4 flex justify-between items-center"  >
-    <n-input  :placeholder="$t('mj.setOpenPlaceholder')"  v-model:value="gptServerStore.myData.UPLOADER_URL" clearable>
-      <template #prefix>
-        <span class="text-[var(--n-tab-text-color-active)]">{{$t('mj.setUploaderUrl')}}</span>
-      </template>
-    </n-input>
- </section>
-
-<section class=" text-right flex justify-end space-x-2"  >
-    <NButton   @click="gptServerStore.setInit()">{{$t('mj.setBtBack')}}</NButton>
-    <NButton type="primary" @click="save">{{$t('mj.setBtSave')}}</NButton>
- </section>
-</div>
+    <section class=" text-right flex justify-end space-x-2">
+      <NButton @click="gptServerStore.setInit()">
+        {{ $t('mj.setBtBack') }}
+      </NButton>
+      <NButton type="primary" @click="save">
+        {{ $t('mj.setBtSave') }}
+      </NButton>
+    </section>
+  </div>
 </template>
+
 <style>
 #setserver .n-input .n-input__input-el{
     text-align: right;
