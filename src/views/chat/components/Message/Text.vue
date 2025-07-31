@@ -21,6 +21,7 @@ interface Props {
   inversion?: boolean
   error?: boolean
   text?: string
+  reasonText?: string
   loading?: boolean
   asRawText?: boolean
   chat: Chat.Chat
@@ -72,6 +73,46 @@ const wrapClass = computed(() => {
   ]
 })
 
+const reasonText = computed(()=>{
+  let value = props.reasonText
+  if (!value) {
+    return ''
+  }
+  if (!props.asRawText) {
+    value = value.replace(/\\\( *(.*?) *\\\)/g, '$$$1$$')
+    // value = value.replace(/\\\((.*?)\\\)/g, '$$$1$$');
+    value = value.replace(/\\\[ *(.*?) *\\\]/g, '$$$$$1$$$$')
+    //
+    value = value.replaceAll('\\[', '$$$$')
+    value = value.replaceAll('\\]', '$$$$')
+
+    // // 思考过程处理
+    // // value= value.replace(/<think>([\s\S]*?)<\/think>/g, (match: string, content: string) => {
+    // value = value.replace(/<think>([\s\S]*?)(?=<\/think>|$)/g, (match: string, content: string) => {
+    //   const processedContent: string = content
+    //     .split('\n')
+    //     .map(line => line.trim() ? `>${line}` : line)
+    //     .join('\n').replace(/(\r?\n)+/g, '\n>\n')
+    //
+    //   return `>Thinking...${processedContent}`
+    // })
+    // value = value.replaceAll('</think>', '')
+    // mlog('replace', value)
+
+    value = `\n${value}`
+
+    value = value
+      .split('\n')
+      .map(line => line.trim() ? `>${line}` : line)
+      .join('\n').replace(/(\r?\n)+/g, '\n>\n')
+
+    value = `${value}\n>>`
+
+    return mdi.render(`>${t('mj.thinking')}...${value}`)
+  }
+  return value
+})
+
 const text = computed(() => {
   let value = props.text ?? ''
   if (!props.asRawText) {
@@ -90,7 +131,7 @@ const text = computed(() => {
         .map(line => line.trim() ? `>${line}` : line)
         .join('\n').replace(/(\r?\n)+/g, '\n>\n')
 
-      return `>Thinking...${processedContent}`
+      return `>${t('mj.thinking')}...${processedContent}`
     })
     value = value.replaceAll('</think>', '')
     // mlog('replace', value)
@@ -151,11 +192,12 @@ onUnmounted(() => {
         <aiTextSetting v-if="!inversion && isApikeyError(text)" />
         <aiSetAuth v-if="!inversion && isAuthSessionError(text)" />
 
-        <dallText v-if=" chat.model && chat.model?.indexOf('chat') == -1" :chat="chat" class="whitespace-pre-wrap" />
+        <dallText v-if="chat.model && chat.model?.indexOf('chat') == -1" :chat="chat" class="whitespace-pre-wrap" />
         <mjText v-if="chat.mjID" class="whitespace-pre-wrap" :chat="chat" :mdi="mdi" />
         <ttsText v-else-if="chat.model && isTTS(chat.model) && chat.text == 'ok'" :chat="chat" />
         <template v-else>
-          <div v-if="!asRawText" class="markdown-body" :class="{ 'markdown-body-generate': loading }" v-html="text" />
+          <div v-if="reasonText !== ''" class="markdown-body" :class="{ 'markdown-body-generate': loading }" v-html="reasonText" />
+	        <div v-if="!asRawText" class="markdown-body" :class="{ 'markdown-body-generate': loading }" v-html="text" />
           <div v-else class="whitespace-pre-wrap" v-text="text" />
         </template>
       </div>

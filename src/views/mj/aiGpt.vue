@@ -19,6 +19,7 @@ const controller = ref<AbortController>()// new AbortController();
 const dataSources = computed(() => chatStore.getChatByUuid(+st.value.uuid))
 const ms = useMessage()
 const textRz = ref<string[]>([])
+const reasonTextRz = ref<string[]>([])
 const goFinish = () => {
   // let dindex = st.value.index>=0? st.value.index : dataSources.value.length - 1;
   // return ;
@@ -39,9 +40,18 @@ const getMessage = async (start = 1000, loadingCnt = 3) => {
 }
 watch(() => textRz.value, (n) => {
   // mlog('🐞 textRz',n);
-  if (n.length == 0)
+  if (n.length === 0)
     return
   updateChatSome(+st.value.uuid, st.value.index, { dateTime: new Date().toLocaleString(), text: n.join('') })
+  // scrollToBottom();
+  homeStore.setMyData({ act: 'scrollToBottomIfAtBottom' })
+  // homeStore.setMyData({act:'scrollToBottom'})
+}, { deep: true })
+watch(() => reasonTextRz.value, (n) => {
+  // mlog('🐞 textRz',n);
+  if (n.length === 0)
+    return
+  updateChatSome(+st.value.uuid, st.value.index, { dateTime: new Date().toLocaleString(), text: '', reasonText: n.join('') })
   // scrollToBottom();
   homeStore.setMyData({ act: 'scrollToBottomIfAtBottom' })
   // homeStore.setMyData({act:'scrollToBottom'})
@@ -315,8 +325,14 @@ const submit = (model: string, message: any[], opt?: any) => {
       uuid: st.value.uuid, // 当前会话
       onMessage: (d) => {
         mlog('🐞消息', d)
-	      console.log(d.text)
-        textRz.value.push(d.text)
+        // if (d.reasonText)
+        //   reasonTextRz.value.push(d.reasonText)
+        // else
+        //   textRz.value.push(d.text)
+
+        // 三元运算符写法
+        d.reasonText ? reasonTextRz.value.push(d.reasonText) : textRz.value.push(d.text)
+	      // console.log(reasonTextRz.value.length)
       },
       onError: (e: any) => {
         mlog('onError', e)

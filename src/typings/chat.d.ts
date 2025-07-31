@@ -3,6 +3,7 @@ declare namespace Chat {
 	interface Chat {
 		dateTime: string
 		text: string
+		reasonText?: string
 		inversion?: boolean
 		error?: boolean
 		loading?: boolean
@@ -22,7 +23,7 @@ declare namespace Chat {
 		index?:number
 		myid?:string //唯一随机
 		logo?:string
-		
+
 		//progress?:string
 	}
 

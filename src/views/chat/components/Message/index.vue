@@ -14,6 +14,7 @@ import { getSeed, mlog } from '@/api'
 interface Props {
   dateTime?: string
   text?: string
+  reasonText?: string
   inversion?: boolean
   error?: boolean
   loading?: boolean
@@ -161,6 +162,7 @@ function handleRegenerate2() {
           :inversion="inversion"
           :error="error"
           :text="text"
+          :reason-text="reasonText"
           :loading="loading"
           :as-raw-text="asRawText"
           :chat="chat"

@@ -422,7 +422,7 @@ const ychat = computed(() => {
           <template v-else>
             <div>
               <Message
-                v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime" :text="item.text"
+                v-for="(item, index) of dataSources" :key="index" :date-time="item.dateTime" :text="item.text" :reason-text="item.reasonText"
                 :inversion="item.inversion" :error="item.error" :loading="item.loading"
                 :chat="item" :index="index" @regenerate="onRegenerate(index)" @delete="handleDelete(index)"
               />

@@ -187,7 +187,7 @@ export const subGPT = async (data: any, chat: Chat.Chat) => {
 interface subModelType {
   kid: string
   message: any[]
-  onMessage: (d: { text: string;isFinish: boolean }) => void
+  onMessage: (d: { text: string; reasonText?: string;isFinish: boolean }) => void
   onError?: (d?: any) => void
   signal?: AbortSignal
   model?: string
@@ -270,7 +270,7 @@ export const subModel = async (opt: subModelType) => {
           try {
             // TODO 思考处理，DeepSeek  API 字段reasoning_content ，本地部署标签<think>
             const obj = JSON.parse(data)
-            opt.onMessage({ text: obj.choices[0].delta?.content ?? obj.choices[0].delta?.reasoning_content ?? '', isFinish: obj.choices[0].finish_reason != null })
+            opt.onMessage({ text: obj.choices[0].delta?.content ?? '', reasonText: obj.choices[0].delta?.reasoning_content ?? '', isFinish: obj.choices[0].finish_reason != null })
           }
           catch {
             opt.onMessage({
