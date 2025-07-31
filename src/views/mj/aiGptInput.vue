@@ -525,7 +525,7 @@ function handleClear() {
               <span>模型:{{
                 nGptStore.modelLabel
                   ? truncateText(nGptStore.modelLabel, 20)
-                  : "deepseek/deepseek-r1"
+                  : "deepseek/deepseek-r1-turbo"
               }}
                 {{
                   nGptStore.kid

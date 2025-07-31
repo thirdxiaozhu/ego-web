@@ -26,6 +26,17 @@ interface Props {
   chat: Chat.Chat
 }
 
+/**
+ * 定义组件的 props，使用 TypeScript 接口 Props 约束
+ *
+ * Props 说明：
+ * - inversion?: boolean - 是否为用户发送的消息（true 表示用户消息，false 表示 AI 回复）
+ * - error?: boolean - 消息是否包含错误
+ * - text?: string - 显示的文本内容
+ * - loading?: boolean - 是否处于加载状态
+ * - asRawText?: boolean - 是否以原始文本形式显示（不进行 Markdown 渲染）
+ * - chat: Chat.Chat - 聊天相关数据对象
+ */
 const props = defineProps<Props>()
 
 const { isMobile } = useBasicLayout()
