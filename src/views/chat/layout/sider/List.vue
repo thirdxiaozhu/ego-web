@@ -1,8 +1,9 @@
 <script setup lang='ts'>
-import { computed ,watch,ref} from 'vue'
+import { computed, ref, watch } from 'vue'
 import { NInput, NPopconfirm, NScrollbar } from 'naive-ui'
 import { SvgIcon } from '@/components/common'
-import { gptConfigStore, gptConfigType, homeStore, useAppStore, useChatStore } from '@/store'
+import type { gptConfigType } from '@/store'
+import { gptConfigStore, homeStore, useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { debounce } from '@/utils/functions/debounce'
 import { chatSetting, mlog } from '@/api'
@@ -50,28 +51,31 @@ function isActive(uuid: number) {
   return chatStore.active === uuid
 }
 
-const chatSet= new chatSetting( chatStore.active??1002);
-const myuid= ref<gptConfigType[]>( []) //computed( ()=>chatSet.getObjs() ) ;
-const toMyuid= ( )=> myuid.value= chatSet.getObjs();
-toMyuid();
-const isInObjs= (uuid:number):undefined|gptConfigType =>{
-  if(!myuid.value.length) return ;
-  const index = myuid.value.findIndex((item:gptConfigType)=>{
-    return item.uuid==uuid
+const chatSet = new chatSetting(chatStore.active ?? 1002)
+const myuid = ref<gptConfigType[]>([]) // computed( ()=>chatSet.getObjs() ) ;
+const toMyuid = () => myuid.value = chatSet.getObjs()
+toMyuid()
+const isInObjs = (uuid: number): undefined | gptConfigType => {
+  if (!myuid.value.length)
+    return
+  const index = myuid.value.findIndex((item: gptConfigType) => {
+    return item.uuid == uuid
   })
-  if(index==-1) return ;
-  mlog('index',index, myuid.value[index]  );
-  return myuid.value[index] ;
+  if (index == -1)
+    return
+  mlog('index', index, myuid.value[index])
+  return myuid.value[index]
 }
-watch(()=>homeStore.myData.act,(n:string)=>n=='saveChat' && toMyuid() , {deep:true})
-watch(()=>gptConfigStore.myData , toMyuid , {deep:true})
-
+watch(() => homeStore.myData.act, (n: string) => n == 'saveChat' && toMyuid(), { deep: true })
+watch(() => gptConfigStore.myData, toMyuid, { deep: true })
 </script>
 
 <template>
   <NScrollbar class="px-4 chat-history">
     <div class="flex flex-col gap-2 text-sm">
-      <p class="history-title">{{ $t('common.history')}}</p>
+      <p class="history-title">
+        {{ $t('common.history') }}
+      </p>
       <template v-if="!dataSources.length">
         <div class="flex flex-col items-center mt-4 text-center text-neutral-300">
           <SvgIcon icon="ri:inbox-line" class="mb-2 text-3xl" />
@@ -85,15 +89,15 @@ watch(()=>gptConfigStore.myData , toMyuid , {deep:true})
             :class="isActive(item.uuid) && ['check-chat-item']"
             @click="handleSelect(item)"
           >
-             
-             <AiListText   :myObj="isInObjs(item.uuid)" :myItem="item" :index="index">
-               <NInput
-               style="width: 226px"
+
+            <AiListText :my-obj="isInObjs(item.uuid)" :my-item="item" :index="index">
+              <NInput
                 v-if="item.isEdit"
-                v-model:value="item.title" size="small"
+                v-model:value="item.title"
+                style="width: 226px" size="small"
                 @keypress="handleEnter(item, false, $event)"
               />
-             </AiListText>
+            </AiListText>
             <div v-if="isActive(item.uuid)" class="absolute z-10 flex visible right-1">
               <template v-if="item.isEdit">
                 <button class="p-1" @click="handleEdit(item, false, $event)">

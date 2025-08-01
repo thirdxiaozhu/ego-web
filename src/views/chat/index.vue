@@ -387,29 +387,38 @@ const ychat = computed(() => {
           id="image-wrapper" class="w-full max-w-[1100px] m-auto dark:bg-[#101014]"
           :class="[isMobile ? 'p-2' : 'p-4']"
         >
+          <!-- 当数据源为空时显示帮助信息或通知内容 -->
           <template v-if="!dataSources.length">
+            <!-- 显示会话通知信息 -->
             <div
               v-if="homeStore.myData.session.notify" class="text-neutral-300 mt-4"
               v-html="homeStore.myData.session.notify"
             />
 
+            <!-- 显示帮助信息区域 -->
             <div v-else class="gpts-box">
               <br>
 
               <br>
+              <!-- 非绘图模式下显示帮助内容 -->
               <div v-if="local !== 'draw'">
+                <!-- 帮助信息容器 -->
                 <div class="help">
+                  <!-- AI图标展示 -->
                   <div class="ai-icon">
                     <IconSvg icon="chatGPT" :width="isMobile ? '32px' : '64px'" :height="isMobile ? '32px' : '64px'" />
                   </div>
 
+                  <!-- 帮助文本内容 -->
                   <div
                     class="text"
                     :style="{ 'padding': isMobile ? '22px 10px' : '22px 27px 5px', 'line-height': isMobile ? '20px' : '28px' }"
                   >
+                    <!-- 帮助标题 -->
                     <p class="title">
                       {{ t('chat.helpTitle') }}
                     </p>
+                    <!-- 帮助内容列表，按分号分割显示 -->
                     <p v-for="(item, index) in t('chat.helpcontent').split(';')" :key="index" style="font-weight: bold">
                       {{ item }}
                     </p>
@@ -418,6 +427,7 @@ const ychat = computed(() => {
               </div>
             </div>
           </template>
+
 
           <template v-else>
             <div>
