@@ -77,8 +77,10 @@ watch(() => homeStore.myData.act, async (n) => {
 
     const promptMsg = getInitChat(dd.prompt)
     if (dd.fileBase64 && dd.fileBase64.length > 0) {
-      if (!canVisionModel(model))
-        model = 'gpt-image'
+      // if (!canVisionModel(model)) {
+      //   // model = 'gpt-image'
+      //   model = 'qwen-plus'
+      // }
 
       try {
         const images = await localSaveAny(JSON.stringify(dd.fileBase64))
@@ -167,6 +169,8 @@ watch(() => homeStore.myData.act, async (n) => {
     //         ...historyMesg ];
     const message = [...historyMesg]
 
+    mlog('}}}}}}}}}}}}}}}}}}}}}}}}}}}} 1', message)
+    mlog('dd: ', dd)
     if (dd.fileBase64 && dd.fileBase64.length > 0) {
       if (isCanBase64Model(model)) {
         const obj = {

@@ -126,7 +126,7 @@ export async function train(text: string) {
 }
 
 export const mlog = (msg: string, ...args: unknown[]) => {
-  // localStorage.setItem('debug',1 )
+  localStorage.setItem('debug', String(1))
   const logStyles = [
     // 'padding: 4px 8px',
     // 'color: #fff',
@@ -382,8 +382,8 @@ export const getLastVersion = async () => {
 }
 export const isCanBase64Model = (model: string) => {
   // gpt-4o
-  // customVisionModel
-  const arr = ['gpt-image', 'gpt-4o', 'gemini', '1.5', 'sonnet', 'opus']
+  // customVisionModel
+  const arr = ['gpt-image', 'gpt-4o', 'gemini', '1.5', 'sonnet', 'opus', 'qwen-plus', 'qvq-max', 'qwen-vl-plus']
   for (const m of arr) {
     if (model.includes(m))
       return true

@@ -265,6 +265,7 @@ export const subModel = async (opt: subModelType) => {
       signal: opt.signal,
       onMessage: async (data: string) => {
         // mlog('🐞测试'  ,  data )  ;
+        mlog('!!!!', data)
         if (data == '[DONE]') { opt.onMessage({ text: '', isFinish: true }) }
         else {
           try {
