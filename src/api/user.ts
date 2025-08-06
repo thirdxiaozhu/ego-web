@@ -60,7 +60,7 @@ export function getUserInfo() {
 /**
  * 修改用户名称
  */
-export function editUserNmae(nickName: string) {
+export function editUserName(nickName: string) {
   return request({
     url: '/system/user/editName',
     method: 'post',

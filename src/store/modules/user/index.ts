@@ -4,8 +4,9 @@ import { to } from 'await-to-js'
 import type { UserInfo, UserState } from './helper'
 import { defaultSetting, getLocalState, setLocalState } from './helper'
 import type { LoginFrom, UserData } from '@/typings/user'
-import { doLogin, loginOut } from '@/api/user'
+import { doLogin, editUserName, loginOut } from '@/api/user'
 import { getToken, removeToken, setToken } from '@/store/modules/auth/helper'
+import { mlog } from '@/api'
 
 const token = ref(getToken())
 
@@ -19,11 +20,11 @@ export const useUserStore = defineStore('user-store', {
     async userLogin(data: LoginFrom) {
       // 登录请求
       const [err, res] = await to(doLogin<UserData>(data))
-      console.log(res)
       if (res) {
         const data = res.data
         // token本地存储
         setToken(data.token)
+        setLocalState(data.userInfo)
         token.value = data.token
         return Promise.resolve()
       }
@@ -38,6 +39,14 @@ export const useUserStore = defineStore('user-store', {
       await loginOut()
       token.value = ''
       removeToken()
+    },
+
+    async updateUserName(nickName: string) {
+      const [err, res] = await to(editUserName(nickName))
+      mlog('!!!!', err, res)
+
+      this.userInfo.nickName = nickName
+      this.recordState()
     },
 
     updateUserInfo(userInfo: Partial<UserInfo>) {

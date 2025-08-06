@@ -1,13 +1,13 @@
 import { ss } from '@/utils/storage'
+import {mlog} from "@/api";
 
 const LOCAL_NAME = 'userStorage'
 
 export interface UserInfo {
   avatar: string
-  name: string
   userBalance: number
-  userGrade: string,
-  userName: string
+  userGrade: string
+  nickName: string
 }
 
 export interface UserState {
@@ -18,19 +18,19 @@ export function defaultSetting(): UserState {
   return {
     userInfo: {
       avatar: 'https://avatars.githubusercontent.com/u/32251822?v=4',
-      name: '熊猫助手',
       userBalance: 0,
-      userGrade: '0'
+      userGrade: '0',
+      nickName: '',
     },
   }
 }
 
 export function getLocalState(): UserState {
   const localSetting: UserState | undefined = ss.get(LOCAL_NAME)
-  return { ...defaultSetting(), ...localSetting }
+  // return { ...defaultSetting(), ...localSetting }
+  return localSetting || defaultSetting()
 }
 
 export function setLocalState(setting: UserState): void {
-  ss.set(LOCAL_NAME, setting)
+  ss.set(LOCAL_NAME, { userInfo: setting })
 }
-
