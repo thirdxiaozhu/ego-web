@@ -25,6 +25,7 @@ export const homeStore = reactive({
 })
 
 export interface gptConfigType {
+  category: string
   model: string
   modelLabel: string
   max_tokens: number

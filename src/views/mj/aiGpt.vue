@@ -169,8 +169,6 @@ watch(() => homeStore.myData.act, async (n) => {
     //         ...historyMesg ];
     const message = [...historyMesg]
 
-    mlog('}}}}}}}}}}}}}}}}}}}}}}}}}}}} 1', message)
-    mlog('dd: ', dd)
     if (dd.fileBase64 && dd.fileBase64.length > 0) {
       if (isCanBase64Model(model)) {
         const obj = {

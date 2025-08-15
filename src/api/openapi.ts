@@ -1,10 +1,11 @@
 import axios from 'axios'
 import type { ChatMessage } from 'gpt-tokenizer/esm/GptEncoding'
+import { ref } from 'vue'
 import { mlog, myTrim } from './mjapi'
 import { fetchSSE } from './sse/fetchsse'
 import { localGet, localSaveAny } from './mjsave'
 import { chatSetting } from './chat'
-import { gptConfigStore, gptServerStore, homeStore, useAuthStore } from '@/store'
+import { gptConfigStore, gptServerStore, homeStore, useAuthStore, useChatStore } from '@/store'
 import { isNumber, isObject } from '@/utils/is'
 import { t } from '@/locales'
 import { getToken } from '@/store/modules/auth/helper'
@@ -222,6 +223,17 @@ export const getSystemMessage = (uuid?: number) => {
     Current time: ${new Date().toLocaleString()}`
   return DEFAULT_SYSTEM_TEMPLATE
 }
+
+const getCurrentModelCategory = () => {
+  const chatStore = useChatStore()
+  const uuid = chatStore.active
+
+  const chatSet = new chatSetting(uuid == null ? 1002 : uuid)
+
+  const nGptStore = ref(chatSet.getGptConfig())
+  return nGptStore.value.category
+}
+
 export const subModel = async (opt: subModelType) => {
   const model = opt.model ?? (gptConfigStore.myData.model)
   let max_tokens = gptConfigStore.myData.max_tokens
@@ -264,14 +276,19 @@ export const subModel = async (opt: subModelType) => {
       headers,
       signal: opt.signal,
       onMessage: async (data: string) => {
-        // mlog('🐞测试'  ,  data )  ;
-        mlog('!!!!', data)
         if (data == '[DONE]') { opt.onMessage({ text: '', isFinish: true }) }
         else {
           try {
             // TODO 思考处理，DeepSeek  API 字段reasoning_content ，本地部署标签<think>
             const obj = JSON.parse(data)
-            opt.onMessage({ text: obj.choices[0].delta?.content ?? '', reasonText: obj.choices[0].delta?.reasoning_content ?? '', isFinish: obj.choices[0].finish_reason != null })
+
+            switch (getCurrentModelCategory()) {
+              case 'qianwen':
+                opt.onMessage({ text: obj.output.choices[0].message?.content ?? '', reasonText: obj.output.choices[0].message?.reasoningContent ?? '', isFinish: obj.output.choices[0].finish_reason != null })
+                break
+              default:
+                opt.onMessage({ text: obj.choices[0].delta?.content ?? '', reasonText: obj.choices[0].delta?.reasoning_content ?? '', isFinish: obj.choices[0].finish_reason != null })
+            }
           }
           catch {
             opt.onMessage({

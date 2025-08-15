@@ -63,7 +63,6 @@ function updateUserName(nickName: string) {
 }
 
 function updateUserInfo(options: Partial<UserInfo>) {
-  mlog('!!!!!!', options)
   userStore.updateUserInfo(options)
   ms.success(t('common.success'))
 }

@@ -94,6 +94,7 @@ watch(
   { deep: true },
 )
 const handleSubmit = () => {
+  mlog("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
   if (mvalue.value == '')
     return
   if (checkDisableGpt4(gptConfigStore.myData.model)) {
